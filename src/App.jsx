@@ -76,7 +76,9 @@ function App() {
     console.log(string)
   },[string])
 
+
   // WORK EVENT
+
   const [historyEvent,SetHistoryEvent] = useState(JSON.parse(localStorage.getItem("Eventos")) ?? [])
   
   
@@ -88,7 +90,7 @@ function App() {
         array.push({  
           id:event.id,
           description: event.description,
-          local:event.local
+          local,
         })
         SetHistoryEvent(array)
       }) 
