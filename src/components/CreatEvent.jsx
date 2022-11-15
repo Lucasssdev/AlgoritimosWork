@@ -9,7 +9,7 @@ export default function CreateEvent({handleDataEvent, setCount,handleOnClick,eve
                 <Input placeholder={"Código do Evento"} id={'id'} value={event.id} onChange={handleDataEvent} type={'text'}/>
                 <Input placeholder={'Tipo do evento'} id={'description'} value={event.description} onChange={handleDataEvent} type={'text'}/>
                 <Input placeholder={"Local do evento"} id={'local'} value={event.local} onChange={handleDataEvent} type={'text'}/>
-                <button onClick={handleOnClick}>Cadastrar</button>
+                <button  onClick={handleOnClick}>Cadastrar</button>
             </form>
         </div>
     )
