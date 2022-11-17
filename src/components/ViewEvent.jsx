@@ -6,7 +6,7 @@ export default function ViewEvent({historyPlayers, historyEvent}){
         {
             historyEvent!= [] 
             ? historyEvent.map((event,i=0) =>  <AllEvents key={i++} historyPlayers={historyPlayers} description={event.description} local={event.local} id={event.id}/>) 
-            : <h1>Nao Ha eventos</h1>
+            : <h1>Nao Ha eventos</h1> 
         }
        </ul>
     )
