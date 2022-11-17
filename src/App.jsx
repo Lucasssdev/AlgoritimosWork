@@ -164,7 +164,8 @@ function App() {
 
 
   return (
-    <div className='flex h-screen gap-4 justify-center items-center bg-[#fcfe6f]'>
+    <div className="flex h-full w-screen gap-4 justify-center items-center bg-pencil1  bg-clip-border bg-cover  bg-fixed bg-no-repeat  bg-center ">
+     
       {
         count == 0 ? <Home clickOnString={clickOnString} clickOnEvent={clickOnEvent}/> 
         : count == 1 ? <String setCount={setCount} String={string} handleOnString={handleOnString} handleOnFile={handleOnFile}/> 
@@ -175,6 +176,7 @@ function App() {
         : count == 6 ? <CongratulationEvent setCount={setCount} creatEvent={creatEvent} clickOnEvent={clickOnEvent}/>
         : count == 7 ? <CongratulationUser setCount={setCount} creatUser={creatUser} clickOnEvent={clickOnEvent}/> : null
       }
+      
     </div>
   )
 }
