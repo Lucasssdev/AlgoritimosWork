@@ -7,138 +7,193 @@ import CreatEvent from './components/CreatEvent.jsx'
 import ViewEvent from './components/ViewEvent.jsx'
 import CongratulationEvent from './components/CongratulationEvent.jsx'
 import CongratulationUser from './components/CongratulationUser.jsx'
+import ResultString from './components/ResultString.jsx'
 
 
 import './main.css'
 
+
 function App() {
 
-  //HOME
-  const [count, setCount] = useState(0)
-  const [index, setIndex] = useState(0)
-  useEffect(()=>{
-    console.log(count)
-  },[count])
-  
-  const clickOnString = () => {
-    setCount(1)
-  }
-  const clickOnEvent= () => {
-    setCount(2)
-  }
+  //HOME ------------------------------------------------------------------------------------------------------------------------------------------------
+  const [menu, setMenu] = useState(0) // State para gerenciar os componentes a senrem renderizados
+  const [index, setIndex] = useState(0) // Auxilia com a posição do componente na exucução de função (apenas para compnentes de cadastro)
+ 
   const creatEvent = () => { 
-    setCount(3)
-    setIndex(3)
+    setMenu(3) //Proximo componete a renderizar
+    setIndex(3) // posição do componete indicando que veio de um cadastro de evento
     
   }
   const creatUser = () => {
-    setCount(4)
-    setIndex(4)
-    
-  }
-  const viewEvent = () => {
-    setCount(5)
+    setMenu(4) //Proximo componete a renderizar
+    setIndex(4) // posição do componete indicando que veio de um cadastro de usuario
   }
   
-  const [user,setUser] = useState([{
-    id:"",
-    name: "",
-    idEvent:""
-  }])
-  
-  //WORK STRING
+  //OBS: demais manipulações de componentes são feitas nas diteramente na função do botão passando setMenu como paremetro
 
-    const [string,setString] = useState('')
+  //WORK STRING------------------------------------------------------------------------------------------------------------------------------------------------
 
-    const handleOnString = (e) => {
-      const key = e.target.id;
-      const value = e.target.value;
-      setString((str) => ({
-        ...str,
+    const [string,setString] = useState({ // State para armazenar dados da string a ser recebida
+      get: '', //string
+      value: 0 // numero de vezes que ela aparece
+    })
+    const [file,setFile] = useState({}) // State para armazenar o arquivo recebido
+    const [fileContent,setFileContent] = useState('') // State para armazenar o Conteudo do arquivo em formato de string
+
+    const handleOnString = (e) => { // Função para receber valor (da string) no input
+      const key = e.target.id; // Recebe o id do input atual (id deve ser nomeado igual a propiedade de interesse do objeto)
+      const value = e.target.value; // Recebe o valor digitado no input atual
+      setString((str) => ({ // Atribui os valores ao State String
+        ...str, //Mantém tudo que ja existe a cada novo evento
     
-        [key]: value,
-    })); 
+        [key]: value, //ATribui valor a propriedade do objeto
+      })); 
     }
 
-    const handleOnFile = (e) => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-       let fileContent =  reader.result;
-       console.log(fileContent)
-      }
-      reader.error = () => {
-        console.log(reader.error)
-      }
+    const handleOnFile = (e) => { //Função para receber e manipular o arquivo
       
+      const file = e.target.files[0]; // Recebe o arquivo do input
+      
+      setFile(file) // atribui o arquivo ao State para manipulação futura
+
+      const reader = new FileReader(); // FileReader é uma função de JS para manipular arquivos
+      reader.readAsText(file) // readAsText trata o arquivo como um arquivo de texto 
+
+      reader.onload = () => { // função onload percorre o arquivo até o fim
+
+        let fileContent =  reader.result; //variavel que recebe o body (conteudo) do arquivo (sem tags meta)
+
+        fileContent.toString() //função toString tranforma o conteudo em uma string
+
+        setFileContent(fileContent) //Atribui o conteudo do arquivo como uma string para o State
+      }
+    }
+
+    const searchString = () => { //Função que procura a string no State fileContent, disparada ao click do botão "Procurar"
+
+      if(string.get == '' || string.get == ' ' ){ // VErifica se a string não é vazia
+        alert('Favor digite uma palavra!') //gera um alerta caso for 
+
+      }else if(!fileContent){ // verifica se o Arquivo nao é vazio/nulo 
+        alert('Favor Selecione um documento!') // Alerta caso for
+
+      }else{
+
+        let fileArrayLine = fileContent.split('\r\n') //Variavel recebe texto e tranforma ele em array a cada paragrafo
+        let fileWord = [] // array para palvras
+
+        fileArrayLine.map((text,index)=>{ //Percorre o array dos paragrafos
+            fileWord[index] = text.split(' ') // Atribui arrays das palavra de cada paragrafo
+        })
+
+        fileWord.map((line) => { //percorre os arrays de de palavras por paragrafos, sendo 'line' cada paragrafo
+            line.map((word) => { // percorre o paragrafo e Cada posiçãp deste array ja se entra uma palavra
+             
+              let content = word.includes(string.get) // variavel booleana, recebe seu valor a partir da função 'includes' 
+              //função  icludes' verifica se a string está contida na palavra retornando true coso exista
+              
+              content ? setString(prev => ({ //Ternario para caso existir a string, onde "prev" é tudo que ja existe armazenado no objeto do State
+                ...prev, // Mantém tudo que ja existe
+                value: prev.value + 1 // atribui +1 a proprieda que conta o numero de vezes que ela aparece
+            })) : null // Caso a string não exista não acontece nada 
+          })
+
+        /* OBS: Poderia ter feito em apenas um array com um fileContent.split( ' ' || '\r\n'), porém nem todo arquivo é igual e o sistema
+        acabava quebrando em determinados tipos de texto, por isso optei em separar por paragrafor */
+        
+      })
+        
+       setMenu(8) //Leva o usuario para a vizualização do resultado
+      }
+    } 
+
+    const finishSearch = () => { //função que zera todos os valores para uma nova pesquisa, chamada no click do botão "Finalizar" no compnente de resuldado
+      setMenu(1)
+      setString({ 
+        get: '',
+        value: 0
+      })
+      setFile({})
+      setFileContent('')
     }
     
-  useEffect(()=>{
-    console.log(string)
-  },[string])
 
+  // WORK EVENT------------------------------------------------------------------------------------------------------------------------------------------------
 
-  // WORK EVENT
-
-  const [historyEvent,SetHistoryEvent] = useState(JSON.parse(localStorage.getItem("Eventos")) ?? [])
-  const [event,setEvent] = useState({
+  const [historyEvent,SetHistoryEvent] = useState(JSON.parse(localStorage.getItem("Eventos")) ?? []) //State que recebe os dados de eventos no local storage ou array vazio caso nao exista nada
+  
+  const [event,setEvent] = useState({ //State com objeto para armazenar o evento a ser cadastrado
     id:"",
     description: "",
-    local:""
+    local:"",
+    date: ''
   })
-  const [historyPlayers,SetHistoryPlayers] = useState(JSON.parse(localStorage.getItem("Participantes")) ?? [])
-  const [player,setPlayer] = useState({
+ 
+  const [historyPlayers,SetHistoryPlayers] = useState(JSON.parse(localStorage.getItem("Participantes")) ?? []) //State que recebe os dados de participantes no local storage ou array vazio caso nao exista nada
+  
+  const [player,setPlayer] = useState({ //State com objeto para armazenar o participante a ser cadastrado
     id:"",
     name: "",
-   // tel:"",
     idEvent: ""
   })
   
-  //Funcao do botao: valida qual pagina o usuario esta e adiciona os valores recebidos para variavel de historico
-  const handleOnClick = () => {
-    if(index == 3 ){
-      setCount(6)
-      let array = [...historyEvent]
-      array.push({
+  
+  const handleOnClick = () => { //Funcao do botao: valida qual pagina o usuario esta e adiciona os valores recebidos para variavel de historico
+    if(index == 3 ){ //Valida se é um cadastro de evento
+
+      setMenu(6)
+
+      let array = [...historyEvent] // Variavel que recebe todo conteudo existente no historico de eventos (local storage)
+      
+      array.push({ //Função "push" adiciona na ultima posição do array o novo evento cadstrado
         id: event.id,
         description: event.description,
-        local: event.local
+        local: event.local,
+        date: event.date
       })
-      SetHistoryEvent(array)
+      SetHistoryEvent(array) // Atribui esse novo array ao historico de eventos
+
+      setEvent({ //Zera os valores para um novo cadastro 
+        id:"",
+        description: "",
+        local:"",
+        date: ''
+      })
      
       
-    }else if( index == 4 ){
-      setCount(7)
-      let arrayPlayer = [...historyPlayers]
-      arrayPlayer.push({
+    }else if( index == 4 ){ // Valida se é um cadastro de participante
+
+      setMenu(7)
+      
+      let arrayPlayer = [...historyPlayers] // Variavel que recebe todo conteudo existente no historico de participantes (local storage)
+      
+      arrayPlayer.push({ // Adiciona na ultima posição do array o novo participante cadstrado
         id: player.id,
         name: player.name,
-        //tel: player.tel,
         idEvent: player.idEvent
       })
-      SetHistoryPlayers(arrayPlayer)
+
+      SetHistoryPlayers(arrayPlayer) // Atribui esse novo array ao historico de eventos
+
+      setPlayer({//Zera os valores para um novo cadastro 
+        id:"",
+        name: "",
+        idEvent: ""
+      })
     }
   }
   
   useEffect(()=>{
-    console.log(event,"event",historyEvent)
-  },[event])
-  useEffect(()=>{
-    console.log(player,"player",)
-  },[player])
-
-  useEffect(()=>{
-    //adiciona ao localStorage toda vez que o historico sofrer mudancas
+    // Adiciona ao localStorage toda vez que o State de historico sofrer mudancas
     localStorage.setItem("Eventos",JSON.stringify(historyEvent))
   },[historyEvent])
 
   useEffect(()=>{
-    //adiciona ao localStorage toda vez que o historico sofrer mudancas
+    // Adiciona ao localStorage toda vez que o State de historico sofrer mudancas
     localStorage.setItem("Participantes",JSON.stringify(historyPlayers))
   },[historyPlayers])
 
-  //Recebe valor digita no CreatEvent
-  function handleDataEvent(e){
+  function handleDataEvent(e){  //Recebe valor digitado no input do cadastro de evento (CreatEvent)
       const key = e.target.id;
       const value = e.target.value;
       setEvent((event) => ({
@@ -148,35 +203,32 @@ function App() {
     })); 
       
   }
-  //Recebe valor digita no CreatUser
+
+  //Recebe valor digitado no input do cadastro de participante (CreatUser)
   function handleOnChange(e){
     const key = e.target.id;
     const value = e.target.value;
     setPlayer((player) => ({
       ...player,
-  
+          
       [key]: value,
-  })); 
-    
-}
+    }));
+  }
   
-  
-
-
   return (
-    <div className="flex h-full w-screen gap-4 justify-center items-center bg-pencil1  bg-clip-border bg-cover  bg-fixed bg-no-repeat  bg-center ">
-     
-      {
-        count == 0 ? <Home clickOnString={clickOnString} clickOnEvent={clickOnEvent}/> 
-        : count == 1 ? <String setCount={setCount} String={string} handleOnString={handleOnString} handleOnFile={handleOnFile}/> 
-        : count == 2 ? <Options setCount={setCount} creatEvent={creatEvent} creatUser={creatUser} viewEvent={viewEvent}/>
-        : count == 3 ? <CreatEvent setCount={setCount} handleDataEvent={handleDataEvent} event={event} handleOnClick={handleOnClick}/> 
-        : count == 4 ? <CreatUser  setCount={setCount} user={user} handleOnChange={handleOnChange} handleOnClick={handleOnClick}/> 
-        : count == 5 ? <ViewEvent historyPlayers={historyPlayers} historyEvent={historyEvent}/> 
-        : count == 6 ? <CongratulationEvent setCount={setCount} creatEvent={creatEvent} clickOnEvent={clickOnEvent}/>
-        : count == 7 ? <CongratulationUser setCount={setCount} creatUser={creatUser} clickOnEvent={clickOnEvent}/> : null
+    <div className="flex h-screen w-screen gap-4 justify-center items-center bg-blueEyellow overflow-auto bg-cover bg-no-repeat bg-center ">
+      { // Script que manipula os compnentes a serem renderizados de acordo com o valor do State menu
+        menu == 0 ? <Home setMenu={setMenu} /> 
+        : menu == 1 ? <String searchString={searchString} setMenu={setMenu} file={file} string={string} handleOnString={handleOnString} handleOnFile={handleOnFile}/> 
+        : menu == 2 ? <Options setMenu={setMenu} creatEvent={creatEvent} creatUser={creatUser}/>
+        : menu == 3 ? <CreatEvent setMenu={setMenu} handleDataEvent={handleDataEvent} event={event} handleOnClick={handleOnClick}/> 
+        : menu == 4 ? <CreatUser  setMenu={setMenu} user={player} handleOnChange={handleOnChange} handleOnClick={handleOnClick}/> 
+        : menu == 5 ? <ViewEvent historyPlayers={historyPlayers} setMenu={setMenu} historyEvent={historyEvent}/> 
+        : menu == 6 ? <CongratulationEvent setMenu={setMenu} creatEvent={creatEvent}/>
+        : menu == 7 ? <CongratulationUser setMenu={setMenu} creatUser={creatUser} /> 
+        : menu == 8 ? <ResultString file={file} finishSearch={finishSearch} fileContent={fileContent} string={string}/>
+        : null
       }
-      
     </div>
   )
 }

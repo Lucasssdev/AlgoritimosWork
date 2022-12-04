@@ -4,9 +4,16 @@ module.exports = {
   './src/**/*.jsx',],
   theme: {
     extend: {backgroundImage: {
-      'pencil1': "url('../public/util/pencil1.png')",
-      'pencil2': "url('../public/util/pencil2.png')",
-    },},
+      'gradient': "url('../public/util/gradientjpg.jpg')",
+      'blueEyellow': "url('../public/util/blueEyellow.jpg')",
+      
+    },
+    boxShadow: {
+      '3xl': '0px 5px 15px rgba(0, 0, 0, 0.35)', 
+    }}
   },
-  plugins: [],
+
+  plugins: [
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
 }
