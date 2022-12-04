@@ -140,46 +140,83 @@ function App() {
   
   const handleOnClick = () => { //Funcao do botao: valida qual pagina o usuario esta e adiciona os valores recebidos para variavel de historico
     if(index == 3 ){ //Valida se é um cadastro de evento
-
-      setMenu(6)
-
-      let array = [...historyEvent] // Variavel que recebe todo conteudo existente no historico de eventos (local storage)
       
-      array.push({ //Função "push" adiciona na ultima posição do array o novo evento cadstrado
-        id: event.id,
-        description: event.description,
-        local: event.local,
-        date: event.date
-      })
-      SetHistoryEvent(array) // Atribui esse novo array ao historico de eventos
-
-      setEvent({ //Zera os valores para um novo cadastro 
-        id:"",
-        description: "",
-        local:"",
-        date: ''
-      })
-     
+      let validation = false
       
+      for(let props in event){ // for in precorrendo o objeto 
+        console.log(props)
+        if(event[props] === ''){ // verifica se os campos estao preenchidos
+          alert('Prencha todos os campos')
+          return
+        }else{
+          validation = true // Caso preenchidos valida a variavel com true para prosseguir
+        }
+      }
+      
+      if(validation){ //Se a variavel for verdadeira, o evento é cadastrado
+
+        setMenu(6)
+
+        let array = [...historyEvent] // Variavel que recebe todo conteudo existente no historico de eventos (local storage)
+        
+        array.push({ //Função "push" adiciona na ultima posição do array o novo evento cadstrado
+          id: event.id,
+          description: event.description,
+          local: event.local,
+          date: event.date
+        })
+        SetHistoryEvent(array) // Atribui esse novo array ao historico de eventos
+
+        setEvent({ //Zera os valores para um novo cadastro 
+          id:"",
+          description: "",
+          local:"",
+          date: ''
+        }) 
+      }
     }else if( index == 4 ){ // Valida se é um cadastro de participante
 
-      setMenu(7)
       
-      let arrayPlayer = [...historyPlayers] // Variavel que recebe todo conteudo existente no historico de participantes (local storage)
-      
-      arrayPlayer.push({ // Adiciona na ultima posição do array o novo participante cadstrado
-        id: player.id,
-        name: player.name,
-        idEvent: player.idEvent
-      })
+      let validationEvent = false // Valida se o codigo do evento inserido existe e nao ha campos vazios
 
-      SetHistoryPlayers(arrayPlayer) // Atribui esse novo array ao historico de eventos
+      for(let props in player){ //Percore o Objeto
+        
+        if(player[props] === ''){// Verifica se o camo nao está vazio
+          alert('Prencha todos os campos')
+          return
+        }
+        if(props == 'idEvent'){ // Quando a propriedade do objeto for o codigo do evento
+          
+          historyEvent.map((event)=>{ // Percorre todos os eventos cadstrados
+            event.id == player[props]//verifica se existe algum igual
+            ? validationEvent = true // caso sim, a variavel recebe true
+            : null 
+          })  
+        }
+      }
+  
+      if(!validationEvent){ // Caso a validação nao for verdadeira o cadastro nao é concluido
+        alert('Código do evento inválido')
+        return
+      }else{
+        setMenu(7)
+        
+        let arrayPlayer = [...historyPlayers] // Variavel que recebe todo conteudo existente no historico de participantes (local storage)
+        
+        arrayPlayer.push({ // Adiciona na ultima posição do array o novo participante cadstrado
+          id: player.id,
+          name: player.name,
+          idEvent: player.idEvent
+        })
 
-      setPlayer({//Zera os valores para um novo cadastro 
-        id:"",
-        name: "",
-        idEvent: ""
-      })
+        SetHistoryPlayers(arrayPlayer) // Atribui esse novo array ao historico de eventos
+
+        setPlayer({//Zera os valores para um novo cadastro 
+          id:"",
+          name: "",
+          idEvent: ""
+        })
+      } 
     }
   }
   

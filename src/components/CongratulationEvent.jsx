@@ -9,8 +9,8 @@ export default function CongratulationEvent({ setMenu ,creatEvent}){
                         Evento cadastrado com <strong>sucesso!!!</strong>
                     </h1>
                     <HandsClapping size={90} />
-                    <div onClick={()=>{setMenu(2)}} className='flex justify-around bg-red w-full'>
-                        <button className='h-auto w-auto font-bold hover:bg-[#ee92fd]  hover:font-black  text-xs p-2 text-[#ffffff] rounded-lg bg-[#f3a8ff] border-none mt-4 mb-1'>
+                    <div className='flex justify-around bg-red w-full'>
+                        <button onClick={()=>{setMenu(2)}} className='h-auto w-auto font-bold hover:bg-[#ee92fd]  hover:font-black  text-xs p-2 text-[#ffffff] rounded-lg bg-[#f3a8ff] border-none mt-4 mb-1'>
                             Finalizar
                         </button>
                         <button onClick={creatEvent} className='h-auto w-auto font-bold hover:bg-[#43e06d]  hover:font-black  text-sm p-2 text-[#ffffff] rounded-lg bg-[#3cf86e] border-none mt-4 mb-1' >

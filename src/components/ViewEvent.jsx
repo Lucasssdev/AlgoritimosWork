@@ -2,6 +2,7 @@ import {ArrowCircleLeft, PlusCircle} from 'phosphor-react'
 import CardEvents from './CardEvents.jsx'//Compnente do Card de cada evento
 
 export default function ViewEvent({historyPlayers,setMenu, historyEvent}){
+    console.log(historyEvent)
     return(
         <div className='w-screen  flex flex-col items-center  h-screen pt-10 overflow-auto bg-[#ffa940]'>
             <div className=' w-full h-auto justify-start flex  pl-2'>
@@ -18,10 +19,11 @@ export default function ViewEvent({historyPlayers,setMenu, historyEvent}){
             <ul className='w-full justify-center grid  grid-cols-4 items-center h-auto gap-5 p-10'>
         
                 {
+                    
                     // ternario valida se o historico de eventos não for vazio, percorrendo o array de historico de eventos e renderiza o card passando os dados do posição que o map se encotra para o compnete
-                    historyEvent!= []  
+                    historyEvent != []  
                     ? historyEvent.map((event,i=0) =>  <CardEvents key={i++} historyPlayers={historyPlayers} description={event.description} date={event.date} local={event.local} id={event.id}/>) 
-                    : <h1 className='text-center font-bold text-lg p-8'>Nao Ha eventos</h1> 
+                    : <></>
                 }
             </ul>
        </div>
